@@ -6,16 +6,23 @@ class Movies extends Component {
   state = {
     movies: getMovies(),
   };
-  handleDelete = (movie) => {
-    deleteMovie(movie._id);
-    console.log("执行了");
-    console.log(this.state.movies.length);
-    this.setState({ movies: getMovies() });
+  // handleDelete = (movie) => {
+  //   deleteMovie(movie._id);
+  //   console.log("执行了");
+  //   console.log(this.state.movies.length);
+  //   this.setState({ movies: getMovies() });
+  // };
+  handleDelete = (movieId) => {
+    const movies = this.state.movies.filter((m) => m._id !== movieId);
+    this.setState({ movies });
   };
+
   render() {
+    const { length: count } = this.state.movies;
+    if (count === 0) return <p>There is no movie in the database</p>;
     return (
       <div>
-        <p>Showing {this.state.movies.length} movies in the database. </p>
+        <p>Showing {this.state.movies.length} movies in the database.</p>
         <table className="table">
           <thead>
             <tr>
@@ -36,7 +43,7 @@ class Movies extends Component {
                 <td>
                   <button
                     className="btn btn-danger"
-                    onClick={() => this.handleDelete(movie)}
+                    onClick={() => this.handleDelete(movie._id)}
                   >
                     Delete
                   </button>
