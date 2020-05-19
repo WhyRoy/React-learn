@@ -20,7 +20,7 @@ class Counter extends Component {
         </div>
         <div className="col">
           <button
-            onClick={() => this.props.onHandleIncrement(this.props.counter)}
+            onClick={this.props.onHandleIncrement}
             className="btn btn-secondary btn-sm m-2"
           >
             +
