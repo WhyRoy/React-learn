@@ -2,9 +2,13 @@ import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 //import { deleteMovie } from "../services/fakeMovieService";
 import Like from "./common/like";
+import Pagination from "./common/pagination";
+import { paganate } from "../utils/paganate";
 class Movies extends Component {
   state = {
     movies: getMovies(),
+    pageSize: 4,
+    currentPage: 1,
   };
   // handleDelete = (movie) => {
   //   deleteMovie(movie._id);
@@ -24,10 +28,18 @@ class Movies extends Component {
     movies[index].liked = !movies[index].liked;
     this.setState({ movies });
   };
+  handlePageChange = (pageNum) => {
+    //console.log("点击了第" + pageNum + "页");
+    this.setState({ currentPage: pageNum });
+  };
 
   render() {
     const { length: count } = this.state.movies;
+    const { currentPage, pageSize, movies: Allmovies } = this.state;
     if (count === 0) return <p>There is no movie in the database</p>;
+    const movies = paganate(Allmovies, currentPage, pageSize);
+    console.log(Allmovies);
+    console.log(movies);
     return (
       <div>
         <p>Showing {this.state.movies.length} movies in the database.</p>
@@ -43,7 +55,7 @@ class Movies extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.movies.map((movie) => (
+            {movies.map((movie) => (
               <tr key={movie._id}>
                 <td>{movie.title}</td>
                 <td>{movie.genre.name}</td>
@@ -68,6 +80,12 @@ class Movies extends Component {
             ))}
           </tbody>
         </table>
+        <Pagination
+          itemsCount={count}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={this.handlePageChange}
+        />
       </div>
     );
   }
