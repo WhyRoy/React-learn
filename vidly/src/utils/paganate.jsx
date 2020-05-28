@@ -6,4 +6,5 @@ export function paganate(items, pageNumber, pageSize) {
   return _(items)
     .slice(startIndex, startIndex + pageSize)
     .value();
+  //mosh的方法不对，这个是对的
 }
