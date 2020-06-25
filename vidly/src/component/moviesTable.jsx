@@ -1,48 +1,45 @@
 import React, { Component } from "react";
 import Like from "./common/like";
+import Table from "./common/table";
 
 class MoviesTable extends Component {
+  columns = [
+    { path: "title", name: "Title" },
+    { path: "genre.name", name: "Genre" },
+    { path: "numberInStock", name: "Stock" },
+    { path: "dailyRentalRate", name: "Rate" },
+    {
+      key: "like",
+      content: (movie) => (
+        <Like
+          liked={movie.liked}
+          movie={movie}
+          onHandleLike={() => this.props.onLike(movie)}
+        />
+      ),
+    },
+    {
+      key: "delete",
+      content: (movie) => (
+        <button
+          className="btn btn-danger"
+          onClick={() => this.props.onDelete(movie._id)}
+        >
+          Delete
+        </button>
+      ),
+    },
+  ];
   render() {
-    const { movies, onLike, onDelete } = this.props;
+    const { movies, onSort, sortColumn } = this.props;
 
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            <td>TITLE</td>
-            <td>GENRE</td>
-            <td>STOCK</td>
-            <td>RATE</td>
-            <td></td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
-          {movies.map((movie) => (
-            <tr key={movie._id}>
-              <td>{movie.title}</td>
-              <td>{movie.genre.name}</td>
-              <td>{movie.numberInStock}</td>
-              <td>{movie.dailyRentalRate}</td>
-              <td>
-                <Like
-                  liked={movie.liked}
-                  movie={movie}
-                  onHandleLike={() => onLike(movie)}
-                />
-              </td>
-              <td>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => onDelete(movie._id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table
+        data={movies}
+        onSort={onSort}
+        sortColumn={sortColumn}
+        columns={this.columns}
+      />
     );
   }
 }

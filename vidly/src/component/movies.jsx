@@ -1,20 +1,22 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
-//import { deleteMovie } from "../services/fakeMovieService";
 import MoviesTable from "./moviesTable";
 import Pagination from "./common/pagination";
 import { paganate } from "../utils/paganate";
 import ListGroup from "./common/listGroup";
 import { getGenres } from "../services/fakeGenreService";
+import _ from "lodash";
+
 class Movies extends Component {
   state = {
     movies: [],
     pageSize: 4,
     currentPage: 1,
     genres: [],
+    sortColumn: { path: "title", order: "asc" }, //这个参数是个对象，既包含了按什么排序，又包含了排序的方向，这就是用对象的好处，否则岂不是要用两个参数？
   };
   componentDidMount() {
-    const genres = [{ name: "All Genres" }, ...getGenres()];
+    const genres = [{ name: "All Genres", _id: "" }, ...getGenres()];
     this.setState({ movies: getMovies(), genres });
   }
   // handleDelete = (movie) => {
@@ -28,7 +30,7 @@ class Movies extends Component {
     this.setState({ movies });
   };
   handleLike = (movie) => {
-    console.log(movie, "Like Button Clicked");
+    //console.log(movie, "Like Button Clicked");
     const movies = [...this.state.movies];
     const index = movies.indexOf(movie);
     movies[index] = { ...movies[index] };
@@ -45,24 +47,37 @@ class Movies extends Component {
     //console.log(genre);
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
-  render() {
-    const { length: count } = this.state.movies;
+
+  handleSort = (sortColumn) => {
+    this.setState({ sortColumn });
+  };
+  getPageData = () => {
     const {
       currentPage,
       pageSize,
       movies: Allmovies,
-      genres,
       selectedGenre,
+      sortColumn,
     } = this.state;
-    if (count === 0) return <p>There is no movie in the database</p>;
-
     const filtered =
-      selectedGenre && selectedGenre._id
+      selectedGenre && selectedGenre._id !== ""
         ? Allmovies.filter((m) => m.genre._id === selectedGenre._id)
         : Allmovies;
 
-    let movies = paganate(filtered, currentPage, pageSize);
+    const orderd = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
+    const movies = paganate(orderd, currentPage, pageSize);
+    return { totalCount: filtered.length, data: movies };
+  };
+  handleClick = () => {
+    this.props.history.push("/movies/new");
+  };
+
+  render() {
+    const { length: count } = this.state.movies;
+    const { currentPage, pageSize, genres, sortColumn } = this.state;
+    if (count === 0) return <p>There is no movie in the database</p>;
+    const { totalCount, data: movies } = this.getPageData();
     return (
       <div className="row">
         <div className="col-3">
@@ -73,14 +88,23 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <p>Showing {filtered.length} movies in the database.</p>
+          <button
+            className="btn btn-primary"
+            style={{ marginBottom: "20px" }}
+            onClick={this.handleClick}
+          >
+            New Movie
+          </button>
+          <p>Showing {totalCount} movies in the database.</p>
           <MoviesTable
             movies={movies}
+            sortColumn={sortColumn}
             onLike={this.handleLike}
             onDelete={this.handleDelete}
+            onSort={this.handleSort}
           />
           <Pagination
-            itemsCount={filtered.length}
+            itemsCount={totalCount}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
