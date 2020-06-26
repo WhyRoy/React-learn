@@ -6,13 +6,16 @@ import { paganate } from "../utils/paganate";
 import ListGroup from "./common/listGroup";
 import { getGenres } from "../services/fakeGenreService";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 class Movies extends Component {
   state = {
     movies: [],
     pageSize: 4,
     currentPage: 1,
+    selectedGenre: null,
     genres: [],
+    value: "",
     sortColumn: { path: "title", order: "asc" }, //这个参数是个对象，既包含了按什么排序，又包含了排序的方向，这就是用对象的好处，否则岂不是要用两个参数？
   };
   componentDidMount() {
@@ -52,13 +55,18 @@ class Movies extends Component {
     this.setState({ sortColumn });
   };
   getPageData = () => {
-    const {
+    let {
       currentPage,
       pageSize,
       movies: Allmovies,
       selectedGenre,
       sortColumn,
+      value,
     } = this.state;
+    const result = this.state.movies.filter((movie) =>
+      movie.title.toLowerCase().match(value)
+    );
+    if (result) Allmovies = result;
     const filtered =
       selectedGenre && selectedGenre._id !== ""
         ? Allmovies.filter((m) => m.genre._id === selectedGenre._id)
@@ -71,6 +79,9 @@ class Movies extends Component {
   };
   handleClick = () => {
     this.props.history.push("/movies/new");
+  };
+  handleSearch = (query) => {
+    this.setState({ selectedGenre: null, currentPage: 1, value: query });
   };
 
   render() {
@@ -88,14 +99,19 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <button
-            className="btn btn-primary"
-            style={{ marginBottom: "20px" }}
-            onClick={this.handleClick}
-          >
+          <Link className="btn btn-primary" to="/movies/new">
             New Movie
-          </button>
+          </Link>
           <p>Showing {totalCount} movies in the database.</p>
+          <input
+            name="query"
+            value={this.state.value}
+            onChange={(e) => this.handleSearch(e.target.value)}
+            className="form-control my-3"
+            autoFocus
+            placeholder="Search..."
+            type="text"
+          />
           <MoviesTable
             movies={movies}
             sortColumn={sortColumn}

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 class Selected extends Component {
-  state = {};
   render() {
     const { name, label, error, genres, onChange, value } = this.props;
     return (
