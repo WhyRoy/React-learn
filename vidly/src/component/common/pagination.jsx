@@ -22,9 +22,9 @@ class Pagination extends Component {
               key={page}
               style={{ cursor: "pointer" }}
             >
-              <a className="page-link" onClick={() => onPageChange(page)}>
+              <button className="page-link" onClick={() => onPageChange(page)}>
                 {page}
-              </a>
+              </button>
             </li>
           ))}
         </ul>

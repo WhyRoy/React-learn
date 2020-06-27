@@ -28,11 +28,12 @@ class Form extends Component {
     return error ? error.details[0].message : null;
   };
   handleChange = ({ target: input }) => {
-    const { errors } = { ...this.state };
-    // const errors = {};
+    // const { errors } = { ...this.state };
+    const errors = {};
     const errorMessage = this.validateProperty(input);
-    if (errorMessage) errors[input.name] = errorMessage;
-    else delete errors[input.name];
+    // if (errorMessage) errors[input.name] = errorMessage;
+    // else delete errors[input.name];
+    errors[input.name] = errorMessage;
     const data = { ...this.state.data };
     data[input.name] = input.value;
     this.setState({ data, errors });
