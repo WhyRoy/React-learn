@@ -6,12 +6,12 @@ class Input extends Component {
       <div className="form-group">
         <label htmlFor={name}>{label}</label>
         <input
-          autoFocus={autoFocus}
+          name={name}
           onChange={onChange}
           value={value}
-          name={name}
           id={name}
           type={type}
+          autoFocus={autoFocus}
           className="form-control"
         />
         {error && <div className="alert alert-danger">{error}</div>}

@@ -39,7 +39,8 @@ class Newmovie extends Form {
 
   doSubmit = () => {
     //call server
-    this.setState(saveMovie(this.state.data));
+    saveMovie(this.state.data);
+    this.props.history.push("/movies");
     console.log("submitted");
   };
   render() {
