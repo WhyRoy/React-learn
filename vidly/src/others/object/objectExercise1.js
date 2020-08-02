@@ -1,0 +1,11 @@
+let obj1 = {};
+// let obj2 = new Object();
+// let obj3 = Object.create(null);
+console.log(obj1);
+// console.log(obj2);
+// console.log(obj3);
+obj1.name = "John";
+obj1.surname = "Smith";
+obj1.name = "John";
+delete obj1.name;
+console.log(obj1);

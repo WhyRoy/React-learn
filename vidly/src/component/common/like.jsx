@@ -4,8 +4,9 @@ import React, { Component } from "react";
 //Output: onClick
 class Like extends Component {
   render() {
-    let classes = "fa fa-heart";
-    if (!this.props.liked) classes += "-o";
+    // let classes = "fa fa-heart";
+    // if (!this.props.liked) classes += "-o";
+    let classes = this.props.liked ? "fa fa-heart" : "fa fa-heart-o";
     return (
       <i
         className={classes}

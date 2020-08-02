@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 class Input extends Component {
   render() {
-    const { name, label, value, onChange, autoFocus, error, type } = this.props;
+    const {
+      name,
+      label,
+      value,
+      onChange,
+      autoFocus,
+      error,
+      type = "text",
+    } = this.props;
     return (
       <div className="form-group">
         <label htmlFor={name}>{label}</label>

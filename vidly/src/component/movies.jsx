@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../services/movieServices";
+import { getGenres } from "../services/genreServices";
 import MoviesTable from "./moviesTable";
 import Pagination from "./common/pagination";
 import { paganate } from "../utils/paganate";
 import ListGroup from "./common/listGroup";
-import { getGenres } from "../services/fakeGenreService";
-import _ from "lodash";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import _ from "lodash";
 
 class Movies extends Component {
   state = {
@@ -18,20 +19,27 @@ class Movies extends Component {
     value: "",
     sortColumn: { path: "title", order: "asc" }, //这个参数是个对象，既包含了按什么排序，又包含了排序的方向，这就是用对象的好处，否则岂不是要用两个参数？
   };
-  componentDidMount() {
-    const genres = [{ name: "All Genres", _id: "" }, ...getGenres()];
-    this.setState({ movies: getMovies(), genres });
+  async componentDidMount() {
+    const { data } = await getGenres();
+    const { data: movies } = await getMovies();
+    const genres = [{ name: "All Genres", _id: "" }, ...data];
+    this.setState({ movies, genres });
   }
-  // handleDelete = (movie) => {
-  //   deleteMovie(movie._id);
-  //   console.log("执行了");
-  //   console.log(this.state.movies.length);
-  //   this.setState({ movies: getMovies() });
-  // };
-  handleDelete = (movieId) => {
+
+  handleDelete = async (movieId) => {
+    const originalState = this.state.movies;
     const movies = this.state.movies.filter((m) => m._id !== movieId);
     this.setState({ movies });
+    try {
+      await deleteMovie(movieId);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        toast.error("This movie has already been deleted");
+      }
+      this.setState({ movies: originalState });
+    }
   };
+
   handleLike = (movie) => {
     //console.log(movie, "Like Button Clicked");
     const movies = [...this.state.movies];
@@ -40,6 +48,7 @@ class Movies extends Component {
     movies[index].liked = !movies[index].liked;
     this.setState({ movies });
   };
+
   handlePageChange = (pageNum) => {
     //console.log("点击了第" + pageNum + "页");
     this.setState({ currentPage: pageNum });
@@ -48,12 +57,13 @@ class Movies extends Component {
   handleGenreSelect = (genre) => {
     //console.log("list clicked");
     //console.log(genre);
-    this.setState({ selectedGenre: genre, currentPage: 1 });
+    this.setState({ selectedGenre: genre, currentPage: 1, value: "" });
   };
 
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
   };
+
   getPageData = () => {
     let {
       currentPage,
@@ -63,8 +73,8 @@ class Movies extends Component {
       sortColumn,
       value,
     } = this.state;
-    const result = this.state.movies.filter((movie) =>
-      movie.title.toLowerCase().match(value)
+    const result = Allmovies.filter((movie) =>
+      movie.title.toLowerCase().includes(value.toLowerCase())
     );
     if (result) Allmovies = result;
     const filtered =
@@ -77,9 +87,11 @@ class Movies extends Component {
     const movies = paganate(orderd, currentPage, pageSize);
     return { totalCount: filtered.length, data: movies };
   };
+
   handleClick = () => {
     this.props.history.push("/movies/new");
   };
+
   handleSearch = (query) => {
     this.setState({ selectedGenre: null, currentPage: 1, value: query });
   };
@@ -110,7 +122,6 @@ class Movies extends Component {
             className="form-control my-3"
             autoFocus
             placeholder="Search..."
-            type="text"
           />
           <MoviesTable
             movies={movies}

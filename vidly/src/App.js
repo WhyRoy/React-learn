@@ -10,10 +10,13 @@ import NotFound from "./component/not-found";
 import LoginForm from "./component/loginForm";
 import Register from "./component/registerForm";
 import Newmovie from "./component/newmovie";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <main className="container">
+    <React.Fragment>
+      <ToastContainer />
       <Navbar />
       <div>
         <Switch>
@@ -28,7 +31,7 @@ function App() {
           <Redirect to="/not-found" />
         </Switch>
       </div>
-    </main>
+    </React.Fragment>
   );
 }
 

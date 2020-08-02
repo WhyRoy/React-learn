@@ -1,22 +1,40 @@
 import React from "react";
 import Form from "./common/form";
 import Joi from "joi-browser";
-import { getGenres } from "../services/fakeGenreService";
-import { saveMovie, getMovie } from "../services/fakeMovieService";
+import { getGenres } from "../services/genreServices";
+import { getMovie, saveMovie } from "../services/movieServices";
+
 class Newmovie extends Form {
   state = {
     data: { title: "", numberInStock: "", dailyRentalRate: "", genreId: "" },
     errors: {},
     genres: [],
   };
-  componentDidMount() {
-    this.setState({ genres: getGenres() });
-    const movieId = this.props.match.params.id;
-    if (movieId === "new") return;
-    const movie = getMovie(movieId);
-    if (!movie) return this.props.history.replace("/not-found");
-    this.setState({ data: this.mapToViewmodel(movie) });
+
+  async componentDidMount() {
+    this.populateGenres();
+    this.populateMovies();
   }
+
+  async populateGenres() {
+    const { data: genres } = await getGenres();
+    this.setState({ genres });
+  }
+
+  async populateMovies() {
+    try {
+      const movieId = this.props.match.params.id;
+      console.log(movieId);
+      if (movieId === "new") return;
+      const { data: movie } = await getMovie(movieId);
+      this.setState({ data: this.mapToViewmodel(movie) });
+      console.log(this.mapToViewmodel(movie));
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        return this.props.history.replace("/not-found");
+    }
+  }
+
   mapToViewmodel(movie) {
     return {
       _id: movie._id,
@@ -27,7 +45,8 @@ class Newmovie extends Form {
     };
   }
   schema = {
-    title: Joi.string().required().label("Title"),
+    _id: Joi.string(),
+    title: Joi.string().required().min(5).label("Title"),
     genreId: Joi.string().required().label("Genre"),
     numberInStock: Joi.number()
       .required()
@@ -37,9 +56,9 @@ class Newmovie extends Form {
     dailyRentalRate: Joi.number().required().min(0).max(10).label("Rate"),
   };
 
-  doSubmit = () => {
+  doSubmit = async () => {
     //call server
-    saveMovie(this.state.data);
+    await saveMovie(this.state.data);
     this.props.history.push("/movies");
     console.log("submitted");
   };
