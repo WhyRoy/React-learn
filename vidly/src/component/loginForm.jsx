@@ -1,7 +1,7 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
-import { login } from "../services/authService";
+import auth from "../services/authService";
 
 class LoginForm extends Form {
   state = {
@@ -17,9 +17,8 @@ class LoginForm extends Form {
     //call server
     try {
       const { data } = this.state;
-      const { data: jwt } = await login(data.username, data.password);
+      const { data: jwt } = await auth.login(data.username, data.password);
       console.log(jwt);
-      localStorage.setItem("token", jwt);
       //this.props.history.push("/"); 单页面应用，只是页面重定向。不会使componentDidMount再运行，
       //我们需要完全重载，所以我们用Window.location='/'
       window.location = "/";

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import jwtDecode from "jwt-decode";
 import Movies from "./component/movies";
 import Navbar from "./component/navbar";
 import Customers from "./component/customers";
@@ -11,18 +10,15 @@ import LoginForm from "./component/loginForm";
 import Register from "./component/registerForm";
 import Newmovie from "./component/newmovie";
 import Logout from "./component/logout";
+import auth from "./services/authService";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 class App extends Component {
   state = {};
   componentDidMount() {
-    try {
-      const jwt = localStorage.getItem("token");
-      const user = jwtDecode(jwt); //这个函数的参数不能为空，否则报错
-      console.log(user);
-      this.setState({ user });
-    } catch (ex) {} //忽略无token的问题
+    const user = auth.getCurrentUser();
+    this.setState({ user });
   }
   render() {
     return (
