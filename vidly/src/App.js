@@ -15,7 +15,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 class App extends Component {
-  state = {};
+  state = {
+    user: null,
+  };
   componentDidMount() {
     const user = auth.getCurrentUser();
     this.setState({ user });
@@ -30,7 +32,10 @@ class App extends Component {
             <Route path="/login" component={LoginForm} />
             <Route path="/register" component={Register} />
             <Route path="/movies/:id" component={Newmovie} />
-            <Route path="/movies" component={Movies} />
+            <Route
+              path="/movies"
+              render={(props) => <Movies {...props} user={this.state.user} />}
+            />
             <Route path="/customers" component={Customers} />
             <Route path="/rentals" component={Rentals} />
             <Route path="/logout" component={Logout} />

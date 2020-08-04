@@ -6,7 +6,7 @@ import TableBody from "./tableBody";
 
 class Table extends Component {
   render() {
-    const { columns, onSort, sortColumn, data } = this.props;
+    const { columns, onSort, sortColumn, data, user } = this.props;
     return (
       <table className="table">
         <TableHeader
@@ -14,8 +14,7 @@ class Table extends Component {
           onSort={onSort}
           sortColumn={sortColumn}
         />
-        <TableBody data={data} columns={columns} />
-        {/* <ToastContainer /> */}
+        <TableBody data={data} columns={columns} user={user} />
       </table>
     );
   }
