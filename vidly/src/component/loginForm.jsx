@@ -17,8 +17,8 @@ class LoginForm extends Form {
     //call server
     try {
       const { data } = this.state;
-      const { data: jwt } = auth.login(data.username, data.password);
-      console.log(jwt);
+      console.log(data);
+      await auth.login(data.username, data.password);
       window.location = "/";
       //this.props.history.push("/"); 单页面应用，只是页面重定向。不会使componentDidMount再运行，
       //我们需要完全重载，所以我们用Window.location='/'

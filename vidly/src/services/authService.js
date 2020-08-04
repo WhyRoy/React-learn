@@ -9,6 +9,7 @@ http.setJwt(getJwt()); //使每个axios请求都带一个特定的请求头属�
 
 export async function login(email, password) {
   const { data: jwt } = await http.post(apiEndpoint, { email, password });
+  console.log(jwt);
   localStorage.setItem(tokenkey, jwt);
 }
 

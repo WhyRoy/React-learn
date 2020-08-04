@@ -31,7 +31,7 @@ class Navbar extends Component {
             <NavLink className="nav-item nav-link" to="/rentals">
               Rentals
             </NavLink>
-            {!user && (
+            {user === null && (
               <React.Fragment>
                 <NavLink className="nav-item nav-link" to="/login">
                   Login
