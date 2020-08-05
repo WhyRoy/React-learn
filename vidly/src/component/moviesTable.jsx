@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Like from "./common/like";
 import Table from "./common/table";
+import auth from "../services/authService";
 
 class MoviesTable extends Component {
   columns = [
@@ -18,26 +19,32 @@ class MoviesTable extends Component {
         />
       ),
     },
-    {
-      key: "delete",
-      content: (movie) => (
-        <button
-          className="btn btn-danger"
-          onClick={() => this.props.onDelete(movie._id)}
-          disabled={!this.props.user}
-        >
-          Delete
-        </button>
-      ),
-    },
   ];
+
+  deleteColDueToAuth = {
+    key: "delete",
+    content: (movie) => (
+      <button
+        className="btn btn-danger"
+        onClick={() => this.props.onDelete(movie._id)}
+      >
+        Delete
+      </button>
+    ),
+  };
+  constructor() {
+    super();
+    if (auth.getCurrentUser()) {
+      this.columns.push(this.deleteColDueToAuth);
+    }
+  }
+
   render() {
-    const { movies, onSort, sortColumn, user } = this.props;
+    const { movies, onSort, sortColumn } = this.props;
 
     return (
       <Table
         data={movies}
-        user={user}
         onSort={onSort}
         sortColumn={sortColumn}
         columns={this.columns}

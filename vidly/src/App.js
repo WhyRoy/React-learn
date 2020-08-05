@@ -11,6 +11,7 @@ import Register from "./component/registerForm";
 import Newmovie from "./component/newmovie";
 import Logout from "./component/logout";
 import auth from "./services/authService";
+import ProtectedRoute from "./component/common/protectedRoute";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
@@ -32,16 +33,7 @@ class App extends Component {
           <Switch>
             <Route path="/login" component={LoginForm} />
             <Route path="/register" component={Register} />
-            <Route
-              path="/movies/:id"
-              render={(props) =>
-                user === null ? (
-                  <Redirect to="/login" />
-                ) : (
-                  <Newmovie {...props} />
-                )
-              }
-            />
+            <ProtectedRoute path="/movies/:id" component={Newmovie} />
             <Route
               path="/movies"
               render={(props) => <Movies {...props} user={user} />}

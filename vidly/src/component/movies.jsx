@@ -130,7 +130,6 @@ class Movies extends Component {
           />
           <MoviesTable
             movies={movies}
-            user={user}
             sortColumn={sortColumn}
             onLike={this.handleLike}
             onDelete={this.handleDelete}
