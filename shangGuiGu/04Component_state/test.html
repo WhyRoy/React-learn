@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="example1"></div>
+    <div id="example2"></div>
+    <script type="text/javascript" src="../js/react.development.js"></script>
+    <script
+      type="text/javascript"
+      src="../js/react-dom.development.js"
+    ></script>
+    <script type="text/javascript" src="../js/babel.min.js"></script>
+    <script type="text/babel">
+      //1.定义组件
+
+      //方式二：ES6类组件
+      class Like extends React.Component {
+        state = {
+          isLike: true,
+        };
+        handleLike = () => {
+          this.setState({ isLike: !this.state.isLike });
+        };
+        render() {
+          const { isLike } = this.state;
+          return (
+            <div onClick={this.handleLike}>
+              <h1>{isLike ? "你喜欢我" : "我喜欢你"}</h1>
+            </div>
+          );
+        }
+      }
+      //2.渲染组件标签
+      ReactDOM.render(<Like />, document.getElementById("example1"));
+    </script>
+  </body>
+</html>

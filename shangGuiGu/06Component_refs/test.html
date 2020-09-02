@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="example1"></div>
+    <div id="example2"></div>
+    <script type="text/javascript" src="../js/react.development.js"></script>
+    <script
+      type="text/javascript"
+      src="../js/react-dom.development.js"
+    ></script>
+    <script type="text/javascript" src="../js/babel.min.js"></script>
+    <script type="text/babel">
+      //1.定义组件
+      //方式一：工厂函数组件
+
+      //方式二：ES6类组件
+      class MyComponemnt extends React.Component {
+        handleClick = () => {
+          alert(this.input.value);
+        };
+        handleBlur = (e) => {
+          alert(e.target.value);
+        };
+        render() {
+          return (
+            <div>
+              <input
+                type="text"
+                autoFocus
+                ref={(input) => {
+                  this.input = input;
+                }}
+              />
+              <button onClick={this.handleClick}>提示输入</button>
+              <input
+                type="text"
+                placeholder="失去焦点提示内容"
+                onBlur={this.handleBlur}
+              />
+            </div>
+          );
+        }
+      }
+      //2.渲染组件标签
+      ReactDOM.render(<MyComponemnt />, document.getElementById("example2"));
+    </script>
+  </body>
+</html>

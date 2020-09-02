@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="example1"></div>
+    <div id="example2"></div>
+    <script type="text/javascript" src="../js/prop-types.js"></script>
+    <script type="text/javascript" src="../js/react.development.js"></script>
+    <script
+      type="text/javascript"
+      src="../js/react-dom.development.js"
+    ></script>
+    <script type="text/javascript" src="../js/babel.min.js"></script>
+    <script type="text/babel">
+      //1.定义组件
+      //方式一：工厂函数
+      function Person(props) {
+        return (
+          <ul>
+            <li>姓名：{props.name}</li>
+            <li>年龄：{props.age}</li>
+            <li>性别：{props.sex}</li>
+          </ul>
+        );
+      }
+      class Person2 extends React.Component {
+        render() {
+          return (
+            <ul>
+              <li>姓名：{this.props.name}</li>
+              <li>年龄：{this.props.age}</li>
+              <li>性别：{this.props.sex}</li>
+            </ul>
+          );
+        }
+      }
+      const person1 = {
+        name: "Tom",
+        age: 18,
+        sex: "女",
+      };
+      const person2 = {
+        name: "Esther",
+        age: 17,
+        sex: "女",
+      };
+      //方式二：ES6类组件
+      //指定属性默认值
+      Person.defaultProps = {
+        age: 18,
+        sex: "男",
+      };
+      //限制组件props参数的类型
+      Person.propTypes = {
+        name: PropTypes.string.isRequired,
+        age: PropTypes.number,
+        sex: PropTypes.sting,
+      };
+      Person2.defaultProps = {
+        age: 18,
+        sex: "女",
+      };
+      //限制组件props参数的类型
+      Person2.propTypes = {
+        name: PropTypes.string.isRequired,
+        age: PropTypes.number,
+        sex: PropTypes.sting,
+      };
+
+      //2.渲染组件标签
+      ReactDOM.render(
+        <Person {...person1} />,
+        document.getElementById("example1")
+      );
+      ReactDOM.render(
+        <Person2 {...person2} />,
+        document.getElementById("example2")
+      );
+    </script>
+  </body>
+</html>
